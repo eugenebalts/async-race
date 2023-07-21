@@ -1,0 +1,14 @@
+.section_garage {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.garage-editor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section__title {
+    color: white;
+}

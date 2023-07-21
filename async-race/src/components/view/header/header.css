@@ -1,0 +1,20 @@
+.header {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.header__title {
+    transform: rotate(-1deg);
+    text-align: right;
+    font-family: 'Holtwood One SC', serif;
+    font-style: italic;
+    font-size: 40px;
+    color: rgb(187, 152, 37);
+    text-shadow: 13px 0px 15px rgba(187, 152, 37, 0.6);
+    line-height: .8em;
+}
+
+.header__title span {
+    font-size: 35px;
+}
