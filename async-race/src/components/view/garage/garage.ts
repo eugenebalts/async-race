@@ -1,8 +1,13 @@
 import './garage.css';
+import Controller from '../../controller/controller';
 import createNewElement from "../create-new-element";
+// import Car from '../car/car';
+import Tracks from '../tracks/tracks';
 
 export default class Garage {
+    controller = new Controller();
     main: HTMLElement | null = document.querySelector('main');
+    tracks = new Tracks();
 
     drawGarage() {
         this.main = document.querySelector('main');
@@ -24,19 +29,8 @@ export default class Garage {
         const garageTitle = createNewElement<HTMLHeadingElement>('h2', ['section__title'], {textContent: `Your garage consists of ${this.main} vehicles`});
         garageSection.append(garageTitle);
         this.main?.append(garageSection);
-        
-    }
-
-    drawCars(data: Car[]) {
-        // const garageSection = document.querySelector('.section_garage');
-        if (data) {
-            for (const car of data) {
-                // const row = createNewElement('div', ['car']);
-                console.log(car['name']);
-                console.log(car);
-            }
-        }
+        this.tracks.drawTracksWrapper();
     }
 }
 
-type Car = Record<string, string>;
+// type TCar = Record<string, string>;
