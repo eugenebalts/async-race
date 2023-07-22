@@ -1,6 +1,7 @@
 .section_garage {
     background: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
+    padding: 10px;
 }
 
 .garage-editor {
@@ -12,3 +13,97 @@
 .section__title {
     color: white;
 }
+
+.form_add {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    background-color: rgb(245, 155, 197);
+    border-radius: 35px;
+    transition: all .5s ease;
+}
+
+.form_add:hover {
+    justify-content: space-between;
+    width: 270px;
+    background-color: rgb(182, 106, 141);
+}
+
+.form_add:hover .form__inputs-wrapper {
+    display: flex;
+    opacity: 1;
+}
+
+.form__inputs-wrapper {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 200px;
+    opacity: 0;
+    border-radius: 25px;
+    transition: all .5s ease;
+}
+
+.form__input_text {
+    flex: 1;
+    width: 200px;
+    display: block;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    width: 150px;
+    border-radius: 5px;
+}
+
+.form__input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form__input_color {
+    border: none;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 10px 10px rgba(255, 145, 56, 0.7);
+    border-radius: 15px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 15px;
+}
+
+.form__button_add {
+    background: transparent;
+    border: none;
+    font-weight: 700;
+    transition: all .2s ease;
+}
+
+.form_add:hover .form__button_add {
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+    background-color: rgb(245, 155, 197);
+    border: none;
+    cursor: pointer;
+}
+
+.form_add:hover .form__button_add:hover {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 0, 0.7);
+} 
+
+
+
+

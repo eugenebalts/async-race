@@ -1,7 +1,6 @@
 import './garage.css';
 import Controller from '../../controller/controller';
 import createNewElement from "../create-new-element";
-// import Car from '../car/car';
 import Tracks from '../tracks/tracks';
 
 export default class Garage {
@@ -13,24 +12,25 @@ export default class Garage {
         this.main = document.querySelector('main');
         const garageSection = createNewElement<HTMLElement>('section', ['section', 'section_garage']);
         const garageEditor = createNewElement<HTMLDivElement>('div', ['garage-editor']);
-        const newCarWrapper: HTMLFormElement = createNewElement<HTMLFormElement>('form', ['form_new-car']);
 
-        const newCarInput: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input-text_new-car'], {placeholder: 'Type car name'});
-        const newCarColor: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input-color_new-car'], {type: 'color'});
-        const newCarButton: HTMLButtonElement = createNewElement<HTMLButtonElement>('button', ['form__button', 'form__button_new-car'], {textContent: 'Create', disabled: true});
+        const newCarForm: HTMLFormElement = createNewElement<HTMLFormElement>('form', ['form_add']);
+        const inputsWrapper = createNewElement('div', ['form__inputs-wrapper']);
+        const newCarInput: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_text'], {placeholder: 'Cars name'});
+        const newCarColor: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_color'], {type: 'color'});
+        const newCarButton = createNewElement('button', ['form__button_add'], {textContent: 'Add'});
 
-        newCarWrapper.append(newCarInput);
-        newCarWrapper.append(newCarColor);
-        newCarWrapper.append(newCarButton);
+        inputsWrapper.append(newCarInput);
+        inputsWrapper.append(newCarColor);
+        newCarForm.append(inputsWrapper);
+        newCarForm.append(newCarButton);
 
-        garageEditor.append(newCarWrapper);
+
+        garageEditor.append(newCarForm);
         garageSection.append(garageEditor);
 
-        const garageTitle = createNewElement<HTMLHeadingElement>('h2', ['section__title'], {textContent: `Your garage consists of ${this.main} vehicles`});
+        const garageTitle = createNewElement<HTMLHeadingElement>('h2', ['section__title'], {textContent: `Garage ()`});
         garageSection.append(garageTitle);
         this.main?.append(garageSection);
         this.tracks.drawTracksWrapper();
     }
 }
-
-// type TCar = Record<string, string>;
