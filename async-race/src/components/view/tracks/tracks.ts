@@ -10,23 +10,21 @@ export default class Tracks {
     garageSection: HTMLElement | null = document.querySelector('.section_garage');
 
     async drawTracksWrapper() {
-        this.garageSection = document.querySelector('.section_garage');
-
         const tracksWrapper = createNewElement('ul', ['garage__tracks']);
 
-        const data: ICar[] = await this.controller.getCars();
+        const gotCars: ICar[] = await this.controller.getCars(1);
 
-        if (data) {
-            for (const object of data) {
-                console.log(object);
-                const newCar = new Car(object['name'], object['color'], object['id']);
-                const car = newCar.createCar();
-                const newTrack = new Track(car);
-                const track = newTrack.createTrack(newCar.name, newCar.id);
-                tracksWrapper?.append(track);
+        if (gotCars) {
+            for (const car of gotCars) {
+                console.log(car);
+                const carInstance = new Car(car['name'], car['color'], car['id']);
+                const newCar = carInstance.createCar();
+                const trackInstance = new Track(newCar);
+                const newTrack = trackInstance.drawTrack(carInstance.name, carInstance.id);
+                tracksWrapper?.append(newTrack);
             }
         }
 
-        this.garageSection?.append(tracksWrapper);
+        return tracksWrapper;
     }
 }

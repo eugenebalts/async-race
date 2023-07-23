@@ -7,11 +7,11 @@ export default class View {
     container = new Container();
     header = new Header();
     main = new Main();
+    body = document.querySelector('body');
 
 
-    render() {
-        this.container.createContainer();
-        this.header.drawHeader();
-        this.main.drawMain();
+    async render() {
+        const container = await this.container.drawContainer();
+        this.body?.append(container);
     }
 }
