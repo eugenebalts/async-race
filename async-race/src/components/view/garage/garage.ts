@@ -16,7 +16,6 @@ export default class Garage {
         if (garageSection) {
             for (let i = 1; i < garageSection.children.length; i++) {
                 const child = garageSection.children[i];
-                console.log(child);
                 garageSection.removeChild(child);
             }
             garageSection.innerHTML = '';
@@ -37,7 +36,6 @@ export default class Garage {
 
     async redrawGarage() {
         this.drawGarage();
-
     }
 
     private drawGarageEditor() {
@@ -78,6 +76,44 @@ export default class Garage {
 
     private drawPagination() {
         const pagination = this.pagination.drawPagination();
+        // const paginationTitle = pagination.children[0];
+        const prevButton = document.querySelector('.pagination__button_prev');
+        const nextButton = document.querySelector('.pagination__button_next');
+
+        pagination.addEventListener('click', (event) => {
+            if (event.target instanceof HTMLElement) {
+                // PREV BTN
+                if (event.target.classList.contains('pagination__button_prev')) {
+                    if (STATE.currentPage > 1) {
+                        STATE.currentPage -= 1;
+                        if (STATE.currentPage === 1) event.target.setAttribute('disabled', 'true');
+                        if (STATE.currentPage < STATE.maxPage) {
+                            if (nextButton) {
+                                if (nextButton.getAttribute('disabled')) nextButton.removeAttribute('disabled');
+                            }
+                        }
+                        // if (paginationTitle) paginationTitle.textContent = `Page №${STATE.currentPage}`;
+                    }
+                    this.redrawGarage();
+                }
+
+                //NEXT BTN
+                if (event.target.classList.contains('pagination__button_next')) {
+                    if (STATE.currentPage < STATE.maxPage) {
+                        STATE.currentPage += 1;
+                        if (STATE.currentPage === STATE.maxPage) event.target.setAttribute('disabled', 'true');
+                        if (STATE.currentPage > 1) {
+                            if (prevButton) {
+                                if (prevButton.getAttribute('disabled')) prevButton.removeAttribute('disabled');
+                            }
+                        }
+                        // if (paginationTitle) paginationTitle.textContent = `Page №${STATE.currentPage}`;
+                    }
+                    this.redrawGarage();
+                }
+            }
+        });
+
         return pagination;
     }
 
