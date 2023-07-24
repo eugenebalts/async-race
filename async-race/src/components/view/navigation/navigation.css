@@ -41,3 +41,12 @@
 .nav__button_winners {
     background-image: url('../../../images/cup.png');
 }
+
+.nav__button_active {
+    opacity: .5;
+}
+
+.nav__button_active:active{
+    transform: unset;
+    opacity: .5;
+}
