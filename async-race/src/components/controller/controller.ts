@@ -59,8 +59,25 @@ export default class Controller {
         
     }
 
-    updateCar() {
+    async updateCar(name: string, color: string, id: number) {
+        const updatedCar = {
+            name,
+            color
+        };
 
+        const response = this.model.postData('PUT',`${this.path.garage}${id}`, updatedCar);
+        await response.then(() => {
+            for (let i = 0; i < STATE.cars.length; i++) {
+                const car = STATE.cars[i];
+                if (car.id === id) {
+                    car.name = updatedCar.name;
+                    car.color = updatedCar.color;
+                }
+            }
+        });
+        console.log(STATE.cars);
+
+        return response;
     }
 
     startEngine() {
