@@ -104,13 +104,13 @@
 
 .road__finish {
     position: absolute;
-    right: 0;
+    right: 60px;
     bottom: 0;
-    width: 110px;
+    width: 30px;
     height: 30px;
     background-image: url('../../../images/finish.png');
     background-position: left;
     background-size: 30px;
     background-repeat: no-repeat;
-
 }
+

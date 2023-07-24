@@ -19,8 +19,8 @@ export default class Tracks {
             for (const car of gotCars) {
                 console.log(car);
                 const carInstance = new Car(car['name'], car['color'], car['id']);
-                const newCar = carInstance.createCar();
-                const trackInstance = new Track(newCar);
+                // const newCar = carInstance.createCar();
+                const trackInstance = new Track(carInstance);
                 const newTrack = trackInstance.drawTrack(carInstance.name, carInstance.id);
                 tracksWrapper?.append(newTrack);
             }

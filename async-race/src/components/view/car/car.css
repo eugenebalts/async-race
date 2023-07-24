@@ -1,3 +1,31 @@
 .car {
+    position: relative;
     display: inline-block;
+    transition: transform 0s linear;
+}
+
+.car.animate {
+    transition: transform var(--animation-duration, 1s) linear;
+}
+
+.car.broken::before {
+    position: absolute;
+    display: block;
+    width: 100px;
+    content: "I'm broken :(";
+    text-align: center;
+    font-size: 14px;
+    top: -30px;
+    left: -25px;
+}
+
+.car.finished::before {
+    position: absolute;
+    display: block;
+    width: 100px;
+    content: "I did it!";
+    text-align: center;
+    font-size: 14px;
+    top: -30px;
+    left: -25px;
 }

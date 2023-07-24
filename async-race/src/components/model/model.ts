@@ -42,9 +42,40 @@ export default class Model {
             return data.ok;
         });
     }
+
+    async patchData(path: string, queryParams: Array<IQueryParams>) {
+
+        const generateQueryString = () => {
+            if (queryParams?.length) {
+                return `?${queryParams.map(param => `${param.key}=${param.value}`).join('&')}`;
+            } else {
+                return '';
+            }
+        };
+
+        let endpoint = `${this.baseLink}${path}`;
+        if (queryParams) {
+            endpoint = `${endpoint}${generateQueryString()}`;
+        }
+        try {
+            const response = await fetch(endpoint, {
+                method: 'PATCH',
+            });
+            const data = response.json();
+            return data;
+        } catch {
+            console.log('Masakra');
+        }
+        // return await fetch(endpoint, {
+        //     method: 'PATCH',
+        // })
+        // .then((data) => {
+        //     return data.json();
+        // });
+    }
 }
 
 interface IQueryParams {
     key: string;
-    value: number;
+    value: number | string;
 }

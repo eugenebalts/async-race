@@ -6,7 +6,8 @@ export default class Controller {
     model = new Model();
     readonly path = {
         garage: '/garage/',
-        winners: '/winners/'
+        winners: '/winners/',
+        engine: '/engine/',
     };
 
     async getAllCars() {
@@ -80,16 +81,51 @@ export default class Controller {
         return response;
     }
 
-    startEngine() {
-
+    async startEngine(id: number) {
+        const queryParams = [
+            {
+                key: 'id',
+                value: id,
+            },
+            {
+                key: 'status',
+                value: 'started'
+            }
+        ];
+        const response = this.model.patchData(`${this.path.engine}`, queryParams);
+        return await response
+            .then((data) => {
+                return data;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     stopEngine() {
 
     }
 
-    driveMode() {
+    async driveMode(id: number) {
+        const queryParams = [
+            {
+                key: 'id',
+                value: id,
+            },
+            {
+                key: 'status',
+                value: 'drive'
+            }
+        ];
+        // const response = this.model.patchData(`${this.path.engine}`, queryParams);
+        try {
+            const response = await this.model.patchData(`${this.path.engine}`, queryParams);
+            const data = response;
+            return data;
 
+        } catch {
+            throw new Error('Brother, your 0.9 TDI has broken, swap to 6.3');
+        }
     }
 
     getWinners() {
