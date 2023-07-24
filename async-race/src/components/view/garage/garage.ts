@@ -113,8 +113,12 @@ export default class Garage {
         const raceButton = createNewElement('button', ['race-control_button', 'race-control__race-btn'], {textContent: 'RACE'});
         const stopButton = createNewElement('button', ['race-control_button', 'race-control__stop-btn'], {textContent: 'STOP'});
 
-        raceButton.addEventListener('click', () => {
-            
+        raceButtons.addEventListener('click', (event) => {
+            if (event.target instanceof HTMLElement) {
+                if (event.target === raceButton) {
+                    // 
+                }
+            }
         });
 
         raceButtons.append(raceButton);
