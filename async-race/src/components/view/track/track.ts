@@ -51,10 +51,10 @@ export default class Track {
         const newCar = this.car.createCar();
 
         roadButtons.addEventListener('click', async (event) => {
-            const startPosition = newCar.getBoundingClientRect().left;
             if (event.target instanceof HTMLElement) {
                 if (event.target.classList.contains('road__button_drive')) {
-                    const {velocity, distance} = await this.controller.startEngine(this.car.id);
+                    if (newCar.classList.contains('stopped')) newCar.classList.remove('stopped');
+                    const {velocity, distance} = await this.controller.startEngine(this.car.id, 'started');
                     console.log(velocity, distance);
                     const startPosition = newCar.getBoundingClientRect().left;
                     const endPosition = finish.getBoundingClientRect().right;
@@ -71,12 +71,19 @@ export default class Track {
                         newCar.style.transform = `translateX(${difference}px)`;
                         try {
                             const data = await this.controller.driveMode(this.car.id);
-                            newCar.classList.add('finished');
+                            if (!newCar.classList.contains('stopped')) {
+                                newCar.classList.add('finished');
+                            }
+                            
                             return data;
                         } catch {
                             // const currentPosition = newCar.getBoundingClientRect().left;
                             newCar.style.transform = `translateX(${newCar.getBoundingClientRect().left - newCar.clientWidth}px)`;
                             newCar.classList.remove('animate');
+                            if (!newCar.classList.contains('stopped')) {
+                                newCar.classList.add('broken');
+                            }
+                            
                             newCar.classList.add('broken'); 
                         }
                     };
@@ -86,9 +93,20 @@ export default class Track {
                 }
 
                 if (event.target.classList.contains('road__button_stop')) {
-                    driveButton.disabled = false;
-                    if (newCar.classList.contains('finished')) newCar.classList.remove('finished');
-                    if (newCar.classList.contains('broken')) newCar.classList.remove('broken');
+                    try {
+                        await this.controller.startEngine(this.car.id, 'stopped')
+                        .then(() => {
+                            newCar.classList.add('stopped');
+                            if (newCar.classList.contains('finished')) newCar.classList.remove('finished');
+                            if (newCar.classList.contains('broken')) newCar.classList.remove('broken');
+                            if (newCar.classList.contains('animate')) newCar.classList.remove('animate');
+                            newCar.style.transform = `translateX(${0}px)`;
+                        });
+                        driveButton.disabled = false;
+                    } catch {
+                        console.log('aa');
+                    }
+                    
                 }
                 
             }

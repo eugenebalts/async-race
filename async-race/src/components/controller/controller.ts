@@ -81,7 +81,7 @@ export default class Controller {
         return response;
     }
 
-    async startEngine(id: number) {
+    async startEngine(id: number, method: string) {
         const queryParams = [
             {
                 key: 'id',
@@ -89,7 +89,7 @@ export default class Controller {
             },
             {
                 key: 'status',
-                value: 'started'
+                value: method
             }
         ];
         const response = this.model.patchData(`${this.path.engine}`, queryParams);
