@@ -4,6 +4,7 @@ import createNewElement from "../create-new-element";
 import Tracks from '../tracks/tracks';
 import Pagination from '../pagination/pagination';
 import STATE from '../../model/STATE';
+import UpdateCar from '../update-car/update-car';
 
 export default class Garage {
     controller = new Controller();
@@ -130,6 +131,25 @@ export default class Garage {
                             this.redrawGarage();
                         })();
                         
+                    }
+                }
+
+                if (event.target.classList.contains('track__button_update')) {
+                    const carsId = Number(event.target.getAttribute('data-id'));
+                    if (carsId) {
+                        const updateCarInstance = new UpdateCar();
+                        const updateCarWrapper = updateCarInstance.drawUpdateWrapper(carsId);
+                        const garageSection = document.querySelector('.section_garage');
+                        garageSection?.prepend(updateCarWrapper);
+
+                        const checkCondition = () => {
+                            if (updateCarInstance.updated === true) {
+                                clearInterval(interval);
+                                this.redrawGarage();
+                            }
+                        };
+
+                        const interval = setInterval(checkCondition, 100);
                     }
                 }
             }
