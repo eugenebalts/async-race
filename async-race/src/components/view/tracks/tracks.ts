@@ -4,6 +4,7 @@ import Controller from "../../controller/controller";
 import Car from "../car/car";
 import Track from "../track/track";
 import { ICar } from '../../types/cat.types';
+import STATE from '../../model/STATE';
 
 export default class Tracks {
     controller = new Controller();
@@ -12,7 +13,7 @@ export default class Tracks {
     async drawTracksWrapper() {
         const tracksWrapper = createNewElement('ul', ['garage__tracks']);
 
-        const gotCars: ICar[] = await this.controller.getCars(1);
+        const gotCars: ICar[] = await this.controller.getCars(STATE.currentPage);   
 
         if (gotCars) {
             for (const car of gotCars) {
