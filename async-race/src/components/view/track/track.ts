@@ -9,7 +9,7 @@ export default class Track {
         this.car = car;
     }
 
-    drawTrack(title: string, id: string | number) {
+    drawTrack(title: string, id: number) {
         const track = createNewElement('li', ['garage__track']);
 
         const trackHeader = this.drawHeader(title, id);
@@ -20,11 +20,13 @@ export default class Track {
         return track;
     }
 
-    drawHeader (title: string, id: string | number) {
+    drawHeader (title: string, id: number) {
         const trackHeader = createNewElement('div', ['track__header']);
         const headerButtons = createNewElement('div', ['track__buttons']);
         const updateButton = createNewElement('button', ['track__button', 'track__button_update']);
         const deleteButton = createNewElement('button', ['track__button', 'track__button_delete']);
+        updateButton.setAttribute('data-id', String(id));
+        deleteButton.setAttribute('data-id', String(id));
         headerButtons.append(updateButton);
         headerButtons.append(deleteButton);
 
