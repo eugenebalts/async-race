@@ -7,6 +7,10 @@ const STATE: ISTATE = {
     maxPage: 3,
 };
 
+const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket'];
+const carModels = ['330i', 'CLA', 'AMG 6.3', 'Calina', 'Abobus', 'Rio', 'X5', 'e46'];
+
+
 interface ISTATE {
     carsOnPage: number,
     cars: ICar[],
@@ -15,3 +19,4 @@ interface ISTATE {
 }
 
 export default STATE;
+export {carNames, carModels};

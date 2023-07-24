@@ -4,6 +4,7 @@ import createNewElement from "../create-new-element";
 import Tracks from '../tracks/tracks';
 import Pagination from '../pagination/pagination';
 import STATE from '../../model/STATE';
+import { carNames, carModels } from '../../model/STATE';
 import UpdateCar from '../update-car/update-car';
 
 export default class Garage {
@@ -24,11 +25,15 @@ export default class Garage {
             garageSection = createNewElement<HTMLElement>('section', ['section', 'section_garage']);
         }
         const garageEditor = this.drawGarageEditor();
+        const generateButton = this.drawGenerateButton();
+        const raceButtons = this.drawRaceButtons();
         const garagePagination = this.drawPagination();
         const garageTitle = this.drawGarageTitle();
         const garageTracks = await this.drawTracks();
 
         garageSection.append(garageEditor);
+        garageSection.append(generateButton);
+        garageSection.append(raceButtons);
         garageSection.append(garagePagination);
         garageSection.append(garageTitle);
         garageSection.append(garageTracks); 
@@ -68,6 +73,53 @@ export default class Garage {
         garageEditor.append(newCarForm);
 
         return garageEditor;
+    }
+
+    drawGenerateButton() {
+        const generateButton = createNewElement('button', ['garage__generate-btn'], {textContent: 'GENERATE'});
+
+        generateButton.addEventListener('click', () => {
+            function getRandomIndex(length: number) {
+                return Math.floor(Math.random() * (length - 1));
+            }
+
+            function getRandomColor() {
+                const letters = "0123456789ABCDEF";
+                let color = "#";
+                for (let i = 0; i < 6; i++) {
+                  color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            for (let i = 0; i <= 100; i++) {
+                const randomCar = carNames[getRandomIndex(carNames.length)];
+                const randomModel = carModels[getRandomIndex(carModels.length)];
+                const randomColor = getRandomColor();
+                (async () => {
+                    return await this.controller.createCar(`${randomCar} ${randomModel}`, randomColor)
+                    .then(() => {
+                        if (i === 100) this.redrawGarage();
+                    });
+                })();
+            }
+        });
+
+        return generateButton;
+    }
+
+    drawRaceButtons() {
+        const raceButtons = createNewElement('div', ['garage__race-control']);
+        const raceButton = createNewElement('button', ['race-control_button', 'race-control__race-btn'], {textContent: 'RACE'});
+        const stopButton = createNewElement('button', ['race-control_button', 'race-control__stop-btn'], {textContent: 'STOP'});
+
+        raceButton.addEventListener('click', () => {
+            
+        });
+
+        raceButtons.append(raceButton);
+        raceButtons.append(stopButton);
+        return raceButtons;
     }
 
     private drawGarageTitle() {
