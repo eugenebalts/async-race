@@ -43,7 +43,19 @@ export default class Controller {
         return response;
     }
 
-    deleteCar() {
+    async deleteCar(id: number) {
+        const response = this.model.deleteData(this.path.garage, id);
+        await response.then((data) => {
+            if (data) {
+                console.log(id);
+                for (let i = 0; i < STATE.cars.length; i++) {
+                    const car = STATE.cars[i];
+                    if (car.id === id) STATE.cars.splice(i, 1);
+                }
+                console.log(STATE.cars);
+            }
+        });
+        return response;
         
     }
 

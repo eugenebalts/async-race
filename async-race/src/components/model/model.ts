@@ -32,6 +32,16 @@ export default class Model {
         const newElement = await response.json();
         return newElement;
     }
+
+    async deleteData(path: string, id: number) {
+        const endpoint = `${this.baseLink}${path}${id}`;
+        return await fetch(endpoint, {
+            method: 'DELETE',
+        })
+        .then((data) => {
+            return data.ok;
+        });
+    }
 }
 
 interface IQueryParams {

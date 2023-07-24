@@ -117,8 +117,23 @@ export default class Garage {
         return pagination;
     }
 
-    private drawTracks() {
-        const tracksWrapper = this.tracks.drawTracksWrapper();
+    private async drawTracks() {
+        const tracksWrapper = await this.tracks.drawTracksWrapper();
+
+        tracksWrapper.addEventListener('click', (event) => {
+            if (event.target instanceof HTMLElement) {
+                if (event.target.classList.contains('track__button_delete')) {
+                    const carsId = Number(event.target.getAttribute('data-id'));
+                    if (carsId) {
+                        (async () => {
+                            await this.controller.deleteCar(carsId);
+                            this.redrawGarage();
+                        })();
+                        
+                    }
+                }
+            }
+        });
         return tracksWrapper;
     }
 }
