@@ -6,11 +6,14 @@ const STATE: ISTATE = {
     currentPage: 1,
     maxPage: 3,
     winners: [],
+    winnersPages: 1,
+    winnersOnPage: 10,
+    currentWinnersPage: 1,
 };
 
 function updateMaxPage() {
+    STATE.winnersPages = Math.ceil(STATE.winners.length / STATE.winnersOnPage);
     STATE.maxPage = Math.ceil(STATE.cars.length / STATE.carsOnPage);
-    console.log(STATE.maxPage);
 }
 
 const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket', 'Ford', 'Honda'];
@@ -23,6 +26,9 @@ interface ISTATE {
     currentPage: number,
     maxPage: number,
     winners: IWinner[],
+    winnersPages: number,
+    winnersOnPage: number,
+    currentWinnersPage: number,
 }
 
 interface IWinner {

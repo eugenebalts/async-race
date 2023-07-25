@@ -5,14 +5,23 @@ import Pagination from '../pagination/pagination';
 import Car from '../car/car';
 
 export default class Winners {
-    pagination = new Pagination();
+    pagination = new Pagination('winners');
     main: HTMLElement | null = document.querySelector('main');
 
 
     async drawWinners() {
-        const winnersSection = createNewElement<HTMLElement>('section', ['section', 'section_winners', 'hidden']);
+        let winnersSection = document.querySelector('.section_winners');
+        if (winnersSection) {
+            for (let i = 1; i < winnersSection.children.length; i++) {
+                const child = winnersSection.children[i];
+                winnersSection.removeChild(child);
+            }
+            winnersSection.innerHTML = '';
+        } else {
+            winnersSection = createNewElement<HTMLElement>('section', ['section', 'section_winners', 'hidden']);
+        }
         const winnersTitle = this.drawTitle();
-        const pagination = this.pagination.drawPagination();
+        const pagination = this.drawPagination();
         this.drawWinnersContainer();
         winnersSection.append(winnersTitle);
         winnersSection.append(pagination);
@@ -20,8 +29,60 @@ export default class Winners {
         return winnersSection;
     }
 
+    drawPagination() {
+        const pagination = this.pagination.drawPagination();
+
+        const prevButton = document.querySelector('.pagination_winners__button_prev');
+        const nextButton = document.querySelector('.pagination_winners__button_next');
+
+        pagination.addEventListener('click', (event) => {
+            if (event.target instanceof HTMLElement) {
+                // PREV BTN
+                if (event.target.classList.contains('pagination_winners__button_prev')) {
+                    if (STATE.currentWinnersPage > 1) {
+                        STATE.currentWinnersPage -= 1;
+                        if (STATE.currentWinnersPage === 1) event.target.setAttribute('disabled', 'true');
+                        if (STATE.currentWinnersPage < STATE.winnersPages) {
+                            if (nextButton) {
+                                if (nextButton.getAttribute('disabled')) nextButton.removeAttribute('disabled');
+                            }
+                        }
+                        // if (paginationTitle) paginationTitle.textContent = `Page №${STATE.currentPage}`;
+                    }
+                    this.redrawWinners();
+                }
+
+                //NEXT BTN
+
+
+                if (event.target.classList.contains('pagination_winners__button_next')) {
+                    if (STATE.currentWinnersPage < STATE.winnersPages) {
+                        STATE.currentWinnersPage += 1;                        
+                        if (STATE.currentWinnersPage === STATE.winnersPages) {
+                            event.target.setAttribute('disabled', 'true');
+                        }
+                        if (STATE.currentWinnersPage > 1) {
+                            if (prevButton) {
+                                if (prevButton.getAttribute('disabled')) prevButton.removeAttribute('disabled');
+                            }
+                        }
+                        // if (paginationTitle) paginationTitle.textContent = `Page №${STATE.currentPage}`;
+                    }
+                    this.redrawWinners();
+                }
+
+
+            }
+        });
+
+        return pagination;
+    }
+
+    
+
+
     async redrawWinners() {
-        
+        this.drawWinners();
     }
 
     drawTitle() {
@@ -31,7 +92,7 @@ export default class Winners {
 
     drawWinnersContainer() {
         const winnersContainer = createNewElement('div', ['winners__container']);
-        const allWinners = STATE.winners;
+        const allWinners = STATE.winners.slice((STATE.currentWinnersPage - 1) * STATE.winnersOnPage, ((STATE.currentWinnersPage - 1) * STATE.winnersOnPage) + STATE.winnersOnPage);
 
         const winnersHeader = createNewElement('div', ['winners__row', 'winners__row_header']);
 

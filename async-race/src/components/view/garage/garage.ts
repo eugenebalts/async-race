@@ -230,13 +230,13 @@ export default class Garage {
     private drawPagination() {
         const pagination = this.pagination.drawPagination();
         // const paginationTitle = pagination.children[0];
-        const prevButton = document.querySelector('.pagination__button_prev');
-        const nextButton = document.querySelector('.pagination__button_next');
+        const prevButton = document.querySelector('.pagination_garage__button_prev');
+        const nextButton = document.querySelector('.pagination_garage__button_next');
 
         pagination.addEventListener('click', (event) => {
             if (event.target instanceof HTMLElement) {
                 // PREV BTN
-                if (event.target.classList.contains('pagination__button_prev')) {
+                if (event.target.classList.contains('pagination_garage__button_prev')) {
                     if (STATE.currentPage > 1) {
                         STATE.currentPage -= 1;
                         if (STATE.currentPage === 1) event.target.setAttribute('disabled', 'true');
