@@ -1,5 +1,5 @@
 import Model from '../model/model';
-import STATE from '../model/STATE';
+import STATE, { updateMaxPage } from '../model/STATE';
 import { ICar } from '../types/cat.types';
 
 export default class Controller {
@@ -14,6 +14,7 @@ export default class Controller {
         await this.model.getData(this.path.garage)
             .then((data: ICar[]) => {
                 data.forEach(car => STATE.cars.push(car));
+                updateMaxPage();
             })
             .catch((err) => {
                 alert(`Failed to fetch data. Error message:  ${err.message}. Please, reload the page.`);
@@ -21,7 +22,7 @@ export default class Controller {
         console.log(STATE.cars);
     }
 
-    async getCars(page: number) {
+    getCars(page: number) {
         return STATE.cars.slice((page - 1) * STATE.carsOnPage, ((page - 1) * STATE.carsOnPage) + STATE.carsOnPage);
     }
 
@@ -38,6 +39,7 @@ export default class Controller {
         const response = this.model.postData('POST',this.path.garage, newCar);
         await response.then((data) => {
             STATE.cars.push(data);
+            updateMaxPage();
         });
         console.log(STATE.cars);
 
@@ -52,6 +54,7 @@ export default class Controller {
                 for (let i = 0; i < STATE.cars.length; i++) {
                     const car = STATE.cars[i];
                     if (car.id === id) STATE.cars.splice(i, 1);
+                    updateMaxPage();
                 }
                 console.log(STATE.cars);
             }

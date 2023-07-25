@@ -17,6 +17,7 @@ export default class Car {
 
     createCar() {
         const car: HTMLElement = createNewElement('div', ['car']);
+        car.setAttribute('data-id', String(this.id));
         car.innerHTML = this.carSvg(this.color);
         return car;
     }

@@ -5,7 +5,12 @@ const STATE: ISTATE = {
     carsOnPage: 7,
     currentPage: 1,
     maxPage: 3,
+    winners: [],
 };
+
+function updateMaxPage() {
+    STATE.maxPage = Math.ceil(STATE.cars.length / STATE.carsOnPage);
+}
 
 const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket'];
 const carModels = ['330i', 'CLA', 'AMG 6.3', 'Calina', 'Abobus', 'Rio', 'X5', 'e46'];
@@ -16,7 +21,14 @@ interface ISTATE {
     cars: ICar[],
     currentPage: number,
     maxPage: number,
+    winners: IWinner[],
+}
+
+interface IWinner {
+    id: number,
+    wins: number,
+    bestTime: number,
 }
 
 export default STATE;
-export {carNames, carModels};
+export {carNames, carModels, updateMaxPage};

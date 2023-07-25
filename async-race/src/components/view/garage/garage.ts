@@ -47,16 +47,16 @@ export default class Garage {
     private drawGarageEditor() {
         const garageEditor = createNewElement<HTMLDivElement>('div', ['garage-editor']);
 
-        const newCarForm: HTMLFormElement = createNewElement<HTMLFormElement>('div', ['form_add']);
+        const carElementForm: HTMLFormElement = createNewElement<HTMLFormElement>('div', ['form_add']);
 
         const inputsWrapper = createNewElement('div', ['form__inputs-wrapper']);
-        const newCarInput: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_text'], {placeholder: 'Cars name'});
-        const newCarColor: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_color'], {type: 'color'});
-        const newCarButton = createNewElement('button', ['form__button_add'], {textContent: 'Add'});
+        const carElementInput: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_text'], {placeholder: 'Cars name'});
+        const carElementColor: HTMLInputElement = createNewElement<HTMLInputElement>('input', ['form__input', 'form__input_color'], {type: 'color'});
+        const carElementButton = createNewElement('button', ['form__button_add'], {textContent: 'Add'});
 
-        newCarButton.addEventListener('click', () => {
-            const carsName: string | null = newCarInput.value;
-            const carsColor: string | null = newCarColor.value;
+        carElementButton.addEventListener('click', () => {
+            const carsName: string | null = carElementInput.value;
+            const carsColor: string | null = carElementColor.value;
             if (carsName && carsColor) {
                 const response = this.controller.createCar(carsName, carsColor);
                 response.then(() => this.redrawGarage());
@@ -65,12 +65,12 @@ export default class Garage {
             }
         });
 
-        inputsWrapper.append(newCarInput);
-        inputsWrapper.append(newCarColor);
-        newCarForm.append(inputsWrapper);
-        newCarForm.append(newCarButton);
+        inputsWrapper.append(carElementInput);
+        inputsWrapper.append(carElementColor);
+        carElementForm.append(inputsWrapper);
+        carElementForm.append(carElementButton);
 
-        garageEditor.append(newCarForm);
+        garageEditor.append(carElementForm);
 
         return garageEditor;
     }
@@ -110,13 +110,171 @@ export default class Garage {
 
     drawRaceButtons() {
         const raceButtons = createNewElement('div', ['garage__race-control']);
-        const raceButton = createNewElement('button', ['race-control_button', 'race-control__race-btn'], {textContent: 'RACE'});
-        const stopButton = createNewElement('button', ['race-control_button', 'race-control__stop-btn'], {textContent: 'STOP'});
+        const raceButton: HTMLButtonElement = createNewElement('button', ['race-control_button', 'race-control__race-btn'], {textContent: 'RACE'});
+        const stopButton: HTMLButtonElement = createNewElement('button', ['race-control_button', 'race-control__stop-btn'], {textContent: 'STOP'});
 
-        raceButtons.addEventListener('click', (event) => {
+        raceButtons.addEventListener('click', async (event) => {
             if (event.target instanceof HTMLElement) {
+                const gotTracks = Array.from(document.querySelectorAll('.garage__track'));
+                const cars = [];
+
                 if (event.target === raceButton) {
-                    // 
+                    raceButton.disabled = true;
+                    // const gotCars = this.controller.getCars(STATE.currentPage);
+                    // const carsCallsStart = [];
+                    
+                    let firstWinner: HTMLElement | null = null;
+
+                const promises = gotTracks.map(async (track) => {
+                    const carElement = track.querySelector('.car');
+                        const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
+                        const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
+                        const id = Number(track.getAttribute('data-id'));
+                        const finish = track.querySelector('.road__finish')!;
+                        if (carElement instanceof HTMLElement) {
+                            cars.push(carElement);
+                            if (carElement.classList.contains('stopped')) carElement.classList.remove('stopped');
+                            const {velocity, distance} = await this.controller.startEngine(id, 'started');
+                            
+                            const startPosition = carElement.getBoundingClientRect().left;
+                            const endPosition = finish.getBoundingClientRect().right;
+                            const difference = endPosition - startPosition;
+                            console.log(startPosition);
+                            console.log(endPosition);
+
+                            const animateCar = async (distance: number, velocity: number) => {
+                                driveButton.disabled = true;
+                                stopButton.disabled = false;
+                                carElement.classList.add('animate');
+                                const time = distance / velocity;
+                                carElement.style.setProperty('--animation-duration', time / 1000 + 's');
+                                carElement.style.transform = `translateX(${difference}px)`;
+                                try {
+                                    await this.controller.driveMode(id);
+                                    if (!carElement.classList.contains('stopped')) {
+                                        carElement.classList.add('finished');
+                                    }
+                                    // return carElement;
+                                    if (!firstWinner) {
+                                        firstWinner = carElement;
+                                        console.log(firstWinner);
+                                        firstWinner.classList.add('winner');
+                                        if (STATE.winners.some(winner => winner.id === id)) {
+                                            for (let i = 0; i < STATE.winners.length; i++) {
+                                                const winner = STATE.winners[i];
+                                                if (winner.id === id) {
+                                                    winner.wins += 1;
+                                                    if (winner.bestTime > time / 1000) {
+                                                        winner.bestTime = time / 1000;
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            const result = {
+                                                id,
+                                                wins: 1,
+                                                bestTime: time / 1000,
+                                            };
+                                            STATE.winners.push(result);
+                                        }
+                                        console.log(STATE.winners);
+                                    }
+                                } catch {
+                                    // const currentPosition = carElement.getBoundingClientRect().left;
+                                    carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
+                                    carElement.classList.remove('animate');
+                                    if (!carElement.classList.contains('stopped')) {
+                                        carElement.classList.add('broken');
+                                    }
+
+                                    carElement.classList.add('broken');
+                                    console.log('im broke');
+                                }
+                            };
+
+                            try {
+                                return await animateCar(distance, velocity);
+                            } catch {
+                                return null;
+                            }
+                            
+                            // return 'suka!';
+                        }
+                });
+                console.log(promises);
+                
+                    // for (const track of gotTracks) {
+                    //     const carElement = track.querySelector('.car');
+                    //     const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
+                    //     const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
+                    //     const id = Number(track.getAttribute('data-id'));
+                    //     const finish = track.querySelector('.road__finish')!;
+                    //     if (carElement instanceof HTMLElement) {
+                    //         cars.push(carElement);
+                    //         if (carElement.classList.contains('stopped')) carElement.classList.remove('stopped');
+                    //         const {velocity, distance} = await this.controller.startEngine(id, 'started');
+                            
+                    //         const startPosition = carElement.getBoundingClientRect().left;
+                    //         const endPosition = finish.getBoundingClientRect().right;
+                    //         const difference = endPosition - startPosition;
+                    //         console.log(startPosition);
+                    //         console.log(endPosition);
+
+                    //         const animateCar = async (distance: number, velocity: number) => {
+                    //             driveButton.disabled = true;
+                    //             stopButton.disabled = false;
+                    //             carElement.classList.add('animate');
+                    //             const time = distance / velocity;
+                    //             carElement.style.setProperty('--animation-duration', time / 1000 + 's');
+                    //             carElement.style.transform = `translateX(${difference}px)`;
+                    //             try {
+                    //                 const data = await this.controller.driveMode(id);
+                    //                 if (!carElement.classList.contains('stopped')) {
+                    //                     carElement.classList.add('finished');
+                    //                 }
+                                    
+                    //                 return data;
+                    //             } catch {
+                    //                 // const currentPosition = carElement.getBoundingClientRect().left;
+                    //                 carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
+                    //                 carElement.classList.remove('animate');
+                    //                 if (!carElement.classList.contains('stopped')) {
+                    //                     carElement.classList.add('broken');
+                    //                 }
+                                    
+                    //                 carElement.classList.add('broken'); 
+                    //             }
+                    //         };
+
+                    //         animateCar(distance, velocity);
+                    //     }
+                    // }
+                    // console.log(cars);
+                }
+
+                if (event.target === stopButton) {
+                    gotTracks.map(async (track) => {
+                        const carElement: HTMLElement | null = track.querySelector('.car')!;
+                        const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
+                        const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
+                        const id = Number(track.getAttribute('data-id'));
+
+                        try {
+                            this.controller.startEngine(id, 'stopped')
+                            .then(() => {
+                                carElement.classList.add('stopped');
+                                if (carElement.classList.contains('finished')) carElement.classList.remove('finished');
+                                if (carElement.classList.contains('broken')) carElement.classList.remove('broken');
+                                if (carElement.classList.contains('animate')) carElement.classList.remove('animate');
+                                if (carElement.classList.contains('winner')) carElement.classList.remove('winner');
+                                carElement.style.transform = `translateX(${0}px)`;
+                            });
+                            driveButton.disabled = false;
+                            stopButton.disabled = true;
+                        } catch {
+                            throw Error('Error has detected');
+                        }
+                    });
                 }
             }
         });

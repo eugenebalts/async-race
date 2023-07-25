@@ -15,6 +15,7 @@ export default class Track {
 
     drawTrack(title: string, id: number) {
         const track = createNewElement('li', ['garage__track']);
+        track.setAttribute('data-id', String(this.car.id));
 
         const trackHeader = this.drawHeader(title, id);
         const trackRoad = this.drawRoad();
@@ -78,7 +79,7 @@ export default class Track {
                             return data;
                         } catch {
                             // const currentPosition = newCar.getBoundingClientRect().left;
-                            newCar.style.transform = `translateX(${newCar.getBoundingClientRect().left - newCar.clientWidth}px)`;
+                            newCar.style.transform = `translateX(${newCar.getBoundingClientRect().left - (newCar.clientWidth * 2)}px)`;
                             newCar.classList.remove('animate');
                             if (!newCar.classList.contains('stopped')) {
                                 newCar.classList.add('broken');
@@ -103,8 +104,9 @@ export default class Track {
                             newCar.style.transform = `translateX(${0}px)`;
                         });
                         driveButton.disabled = false;
+                        stopButton.disabled = true;
                     } catch {
-                        console.log('aa');
+                        throw Error('Error has detected');
                     }
                     
                 }

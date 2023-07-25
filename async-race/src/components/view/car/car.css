@@ -29,3 +29,7 @@
     top: -30px;
     left: -25px;
 }
+
+.car.finished.winner:before {
+    content: 'I WON! YES!';
+}
