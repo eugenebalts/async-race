@@ -6,12 +6,14 @@ import Pagination from '../pagination/pagination';
 import STATE from '../../model/STATE';
 import { carNames, carModels } from '../../model/STATE';
 import UpdateCar from '../update-car/update-car';
+import Winners from '../winners/winners';
 
 export default class Garage {
     controller = new Controller();
     main: HTMLElement | null = document.querySelector('main');
     tracks = new Tracks();
     pagination = new Pagination();
+    winners = new Winners();
 
     public async drawGarage() {
         let garageSection = document.querySelector('.section_garage');
@@ -121,8 +123,6 @@ export default class Garage {
                 if (event.target === raceButton) {
                     raceButton.disabled = true;
                     stopButton.disabled = false;
-                    // const gotCars = this.controller.getCars(STATE.currentPage);
-                    // const carsCallsStart = [];
                     
                     let firstWinner: HTMLElement | null = null;
 
@@ -147,7 +147,7 @@ export default class Garage {
                                     driveCarButton.disabled = true;
                                     stopCarButton.disabled = false;
                                     carElement.classList.add('animate');
-                                    const time = distance / velocity;
+                                    const time = Math.round((distance / velocity));
                                     carElement.style.setProperty('--animation-duration', time / 1000 + 's');
                                     carElement.style.transform = `translateX(${difference}px)`;
                                     try {
@@ -161,24 +161,7 @@ export default class Garage {
                                             console.log(firstWinner);
                                             if (!carElement.classList.contains('stooped')) {
                                                 firstWinner.classList.add('winner');
-                                                if (STATE.winners.some(winner => winner.id === id)) {
-                                                    for (let i = 0; i < STATE.winners.length; i++) {
-                                                        const winner = STATE.winners[i];
-                                                        if (winner.id === id) {
-                                                            winner.wins += 1;
-                                                            if (winner.bestTime > time / 1000) {
-                                                                winner.bestTime = time / 1000;
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    const result = {
-                                                        id,
-                                                        wins: 1,
-                                                        bestTime: time / 1000,
-                                                    };
-                                                    STATE.winners.push(result);
-                                                }
+                                                this.controller.createWinner(id, time / 1000);
                                             }
                                             
                                             console.log(STATE.winners);
@@ -207,6 +190,7 @@ export default class Garage {
 
                 if (event.target === stopButton) {
                     raceButton.disabled = false;
+                    stopButton.disabled = true;
                     Promise.all(gotTracks.map(async (track) => {
                         const carElement: HTMLElement | null = track.querySelector('.car')!;
                         const driveCarButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
@@ -296,6 +280,7 @@ export default class Garage {
                     if (carsId) {
                         (async () => {
                             await this.controller.deleteCar(carsId);
+                            await this.controller.deleteWinner(carsId);
                             this.redrawGarage();
                         })();
                         

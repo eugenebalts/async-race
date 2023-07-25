@@ -26,10 +26,6 @@ export default class Controller {
         return STATE.cars.slice((page - 1) * STATE.carsOnPage, ((page - 1) * STATE.carsOnPage) + STATE.carsOnPage);
     }
 
-    getCar() {
-
-    }
-
     async createCar(name: string, color: string) {
         const newCar: object = {
             name,
@@ -56,11 +52,23 @@ export default class Controller {
                     if (car.id === id) STATE.cars.splice(i, 1);
                     updateMaxPage();
                 }
-                console.log(STATE.cars);
             }
         });
         return response;
-        
+    }
+
+    async deleteWinner(id: number) {
+        const response = this.model.deleteData(this.path.winners, id);
+        await response.then((data) => {
+            if (data) {
+                console.log(id);
+                for (let i = 0; i < STATE.winners.length; i++) {
+                    const winner = STATE.winners[i];
+                    if (winner.id === id) STATE.winners.splice(i, 1);
+                }
+            }
+        });
+        return response;
     }
 
     async updateCar(name: string, color: string, id: number) {
@@ -105,10 +113,6 @@ export default class Controller {
             });
     }
 
-    stopEngine() {
-
-    }
-
     async driveMode(id: number) {
         const queryParams = [
             {
@@ -131,40 +135,62 @@ export default class Controller {
         }
     }
 
-    getWinners() {
-
+    async getWinners() {
+        await this.model.getData(this.path.winners)
+            .then((data: IWinner[]) => {
+                data.forEach(winner => STATE.winners.push(winner));
+                updateMaxPage();
+            })
+            .catch((err) => {
+                alert(`Failed to fetch data. Error message:  ${err.message}. Please, reload the page.`);
+            });
+        console.log(STATE.cars);
     }
 
-    getWinner() {
+    async updateWinner(id: number, time: number) {
+        console.log(`need to update ${id} ${time}`);
+        const currentValues = STATE.winners.filter((item) => {
+            return item.id === id;
+        })[0];
+        const newValues: IWinner = {
+            wins: currentValues.wins + 1,
+            time: time < currentValues.time ? time : currentValues.time,
+        };
 
+        const response = this.model.postData('PUT', `${this.path.winners}${id}`, newValues);
+        return await response.then((data) => {
+            const indexInSTATE = STATE.winners.findIndex((item) => item.id === id);
+            STATE.winners[indexInSTATE].id = id;
+            STATE.winners[indexInSTATE].wins = data.wins;
+            STATE.winners[indexInSTATE].time = data.time;
+        });
+        // return response;
     }
 
-    createWinner() {
+    async createWinner(id: number, time: number) {
+        const newWinner: IWinner = {
+            id,
+            wins: 1,
+            time
+        };
 
-    }
+        if (STATE.winners.some((item) => item.id === id)) {
+            return this.updateWinner(id, time);
+        }
 
-    deleteWinner() {
+        const response = this.model.postData('POST', this.path.winners, newWinner);
+        await response.then((data) => {
+            STATE.winners.push(data);
+            updateMaxPage();
+        });
+        console.log(STATE.winners);
 
-    }
-
-    updateWinner() {
-
+        return response;
     }
 }
 
- // const queryParams = [
-        //     {
-        //         key: '_page',
-        //         value: page
-        //     },
-        //     {
-        //         key: '_limit',
-        //         value: 5,
-        //     }
-        // ];
-        // queryParams.push();
-
-        // const response = this.model.getData(this.path.garage, queryParams);
-        // await response.then((data: ICar[]) => data.forEach((car) => {
-        //     STATE.cars.push(car);
-        // }));
+        interface IWinner {
+            id?: number,
+            wins: number,
+            time: number,
+        }

@@ -13,8 +13,8 @@ function updateMaxPage() {
     console.log(STATE.maxPage);
 }
 
-const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket'];
-const carModels = ['330i', 'CLA', 'AMG 6.3', 'Calina', 'Abobus', 'Rio', 'X5', 'e46'];
+const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket', 'Ford', 'Honda'];
+const carModels = ['330i', 'CLA', 'AMG 6.3', 'Calina', 'Abobus', 'Rio', 'X5', 'e46', 'Accord', 'Corsa'];
 
 
 interface ISTATE {
@@ -26,9 +26,9 @@ interface ISTATE {
 }
 
 interface IWinner {
-    id: number,
+    id?: number,
     wins: number,
-    bestTime: number,
+    time: number,
 }
 
 export default STATE;

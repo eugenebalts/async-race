@@ -11,20 +11,15 @@ export default class Main {
     garage = new Garage();
     winners = new Winners();
 
-    // createMain() {
-    //     this.container = document.querySelector('.container');
-    //     const main = createNewElement<HTMLElement>('main', ['main']);
-    //     this.container?.append(main);
-    // }
-
     async drawMain() {
         const main = createNewElement<HTMLElement>('main', ['main']);
 
         const navigation = this.navigation.drawNavigation();
         const garage = await this.garage.drawGarage();
-
+        const winners = await this.winners.drawWinners();
         main.append(navigation);
         main.append(garage);
+        main.append(winners);
         return main;
     }
 

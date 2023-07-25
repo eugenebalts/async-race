@@ -3,3 +3,11 @@ main {
     flex-direction: column;
     gap: 20px;
 }
+
+.section.hidden {
+    height: 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-200%); 
+}
