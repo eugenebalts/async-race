@@ -10,6 +10,7 @@ const STATE: ISTATE = {
 
 function updateMaxPage() {
     STATE.maxPage = Math.ceil(STATE.cars.length / STATE.carsOnPage);
+    console.log(STATE.maxPage);
 }
 
 const carNames = ['BWM', 'Mercedes', 'Kia', 'MAZ', 'Lada', 'Ferrari', 'Lamborghini', 'Rocket'];

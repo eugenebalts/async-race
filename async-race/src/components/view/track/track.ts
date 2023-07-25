@@ -52,8 +52,12 @@ export default class Track {
         const newCar = this.car.createCar();
 
         roadButtons.addEventListener('click', async (event) => {
+            const raceButton: HTMLButtonElement | null = document.querySelector('.race-control__race-btn');
+            const stopRaceButton: HTMLButtonElement | null = document.querySelector('.race-control__stop-btn');
             if (event.target instanceof HTMLElement) {
                 if (event.target.classList.contains('road__button_drive')) {
+                    raceButton!.disabled = true;
+                    stopRaceButton!.disabled = false;
                     if (newCar.classList.contains('stopped')) newCar.classList.remove('stopped');
                     const {velocity, distance} = await this.controller.startEngine(this.car.id, 'started');
                     console.log(velocity, distance);
@@ -90,18 +94,22 @@ export default class Track {
                     };
 
                     animateCar(distance, velocity);
-
                 }
 
                 if (event.target.classList.contains('road__button_stop')) {
                     try {
                         await this.controller.startEngine(this.car.id, 'stopped')
                         .then(() => {
+                            const carsOnPage = Array.from(document.querySelectorAll('.car'));
                             newCar.classList.add('stopped');
                             if (newCar.classList.contains('finished')) newCar.classList.remove('finished');
                             if (newCar.classList.contains('broken')) newCar.classList.remove('broken');
                             if (newCar.classList.contains('animate')) newCar.classList.remove('animate');
                             newCar.style.transform = `translateX(${0}px)`;
+                            if (carsOnPage.every((car) => car.classList.contains('stopped'))) {
+                                raceButton!.disabled = false;
+                                stopRaceButton!.disabled = true;
+                            }
                         });
                         driveButton.disabled = false;
                         stopButton.disabled = true;

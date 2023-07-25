@@ -112,7 +112,7 @@ export default class Garage {
         const raceButtons = createNewElement('div', ['garage__race-control']);
         const raceButton: HTMLButtonElement = createNewElement('button', ['race-control_button', 'race-control__race-btn'], {textContent: 'RACE'});
         const stopButton: HTMLButtonElement = createNewElement('button', ['race-control_button', 'race-control__stop-btn'], {textContent: 'STOP'});
-
+        stopButton.disabled = true;
         raceButtons.addEventListener('click', async (event) => {
             if (event.target instanceof HTMLElement) {
                 const gotTracks = Array.from(document.querySelectorAll('.garage__track'));
@@ -120,143 +120,97 @@ export default class Garage {
 
                 if (event.target === raceButton) {
                     raceButton.disabled = true;
+                    stopButton.disabled = false;
                     // const gotCars = this.controller.getCars(STATE.currentPage);
                     // const carsCallsStart = [];
                     
                     let firstWinner: HTMLElement | null = null;
 
-                const promises = gotTracks.map(async (track) => {
-                    const carElement = track.querySelector('.car');
-                        const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
-                        const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
-                        const id = Number(track.getAttribute('data-id'));
-                        const finish = track.querySelector('.road__finish')!;
-                        if (carElement instanceof HTMLElement) {
-                            cars.push(carElement);
-                            if (carElement.classList.contains('stopped')) carElement.classList.remove('stopped');
-                            const {velocity, distance} = await this.controller.startEngine(id, 'started');
-                            
-                            const startPosition = carElement.getBoundingClientRect().left;
-                            const endPosition = finish.getBoundingClientRect().right;
-                            const difference = endPosition - startPosition;
-                            console.log(startPosition);
-                            console.log(endPosition);
+                    const promises = gotTracks.map(async (track) => {
+                        const carElement = track.querySelector('.car');
+                            const driveCarButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
+                            const stopCarButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
+                            const id = Number(track.getAttribute('data-id'));
+                            const finish = track.querySelector('.road__finish')!;
+                            if (carElement instanceof HTMLElement) {
+                                cars.push(carElement);
+                                if (carElement.classList.contains('stopped')) carElement.classList.remove('stopped');
+                                const {velocity, distance} = await this.controller.startEngine(id, 'started');
+                                
+                                const startPosition = carElement.getBoundingClientRect().left;
+                                const endPosition = finish.getBoundingClientRect().right;
+                                const difference = endPosition - startPosition;
+                                console.log(startPosition);
+                                console.log(endPosition);
 
-                            const animateCar = async (distance: number, velocity: number) => {
-                                driveButton.disabled = true;
-                                stopButton.disabled = false;
-                                carElement.classList.add('animate');
-                                const time = distance / velocity;
-                                carElement.style.setProperty('--animation-duration', time / 1000 + 's');
-                                carElement.style.transform = `translateX(${difference}px)`;
-                                try {
-                                    await this.controller.driveMode(id);
-                                    if (!carElement.classList.contains('stopped')) {
-                                        carElement.classList.add('finished');
-                                    }
-                                    // return carElement;
-                                    if (!firstWinner) {
-                                        firstWinner = carElement;
-                                        console.log(firstWinner);
-                                        firstWinner.classList.add('winner');
-                                        if (STATE.winners.some(winner => winner.id === id)) {
-                                            for (let i = 0; i < STATE.winners.length; i++) {
-                                                const winner = STATE.winners[i];
-                                                if (winner.id === id) {
-                                                    winner.wins += 1;
-                                                    if (winner.bestTime > time / 1000) {
-                                                        winner.bestTime = time / 1000;
+                                const animateCar = async (distance: number, velocity: number) => {
+                                    driveCarButton.disabled = true;
+                                    stopCarButton.disabled = false;
+                                    carElement.classList.add('animate');
+                                    const time = distance / velocity;
+                                    carElement.style.setProperty('--animation-duration', time / 1000 + 's');
+                                    carElement.style.transform = `translateX(${difference}px)`;
+                                    try {
+                                        await this.controller.driveMode(id);
+                                        if (!carElement.classList.contains('stopped')) {
+                                            carElement.classList.add('finished');
+                                        }
+                                        // return carElement;
+                                        if (!firstWinner) {
+                                            firstWinner = carElement;
+                                            console.log(firstWinner);
+                                            if (!carElement.classList.contains('stooped')) {
+                                                firstWinner.classList.add('winner');
+                                                if (STATE.winners.some(winner => winner.id === id)) {
+                                                    for (let i = 0; i < STATE.winners.length; i++) {
+                                                        const winner = STATE.winners[i];
+                                                        if (winner.id === id) {
+                                                            winner.wins += 1;
+                                                            if (winner.bestTime > time / 1000) {
+                                                                winner.bestTime = time / 1000;
+                                                            }
+                                                        }
                                                     }
+                                                } else {
+                                                    const result = {
+                                                        id,
+                                                        wins: 1,
+                                                        bestTime: time / 1000,
+                                                    };
+                                                    STATE.winners.push(result);
                                                 }
                                             }
-                                        } else {
-                                            const result = {
-                                                id,
-                                                wins: 1,
-                                                bestTime: time / 1000,
-                                            };
-                                            STATE.winners.push(result);
+                                            
+                                            console.log(STATE.winners);
                                         }
-                                        console.log(STATE.winners);
+                                    } catch {
+                                        // const currentPosition = carElement.getBoundingClientRect().left;
+                                        if (!carElement.classList.contains('stopped')) {
+                                            carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
+                                            carElement.classList.remove('animate');
+                                            console.log(carElement);
+                                            carElement.classList.add('broken');
+                                        }
+                                        console.log('im broke');
                                     }
+                                };
+
+                                try {
+                                    return await animateCar(distance, velocity);
                                 } catch {
-                                    // const currentPosition = carElement.getBoundingClientRect().left;
-                                    carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
-                                    carElement.classList.remove('animate');
-                                    if (!carElement.classList.contains('stopped')) {
-                                        carElement.classList.add('broken');
-                                    }
-
-                                    carElement.classList.add('broken');
-                                    console.log('im broke');
+                                    return null;
                                 }
-                            };
-
-                            try {
-                                return await animateCar(distance, velocity);
-                            } catch {
-                                return null;
                             }
-                            
-                            // return 'suka!';
-                        }
-                });
-                console.log(promises);
-                
-                    // for (const track of gotTracks) {
-                    //     const carElement = track.querySelector('.car');
-                    //     const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
-                    //     const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
-                    //     const id = Number(track.getAttribute('data-id'));
-                    //     const finish = track.querySelector('.road__finish')!;
-                    //     if (carElement instanceof HTMLElement) {
-                    //         cars.push(carElement);
-                    //         if (carElement.classList.contains('stopped')) carElement.classList.remove('stopped');
-                    //         const {velocity, distance} = await this.controller.startEngine(id, 'started');
-                            
-                    //         const startPosition = carElement.getBoundingClientRect().left;
-                    //         const endPosition = finish.getBoundingClientRect().right;
-                    //         const difference = endPosition - startPosition;
-                    //         console.log(startPosition);
-                    //         console.log(endPosition);
-
-                    //         const animateCar = async (distance: number, velocity: number) => {
-                    //             driveButton.disabled = true;
-                    //             stopButton.disabled = false;
-                    //             carElement.classList.add('animate');
-                    //             const time = distance / velocity;
-                    //             carElement.style.setProperty('--animation-duration', time / 1000 + 's');
-                    //             carElement.style.transform = `translateX(${difference}px)`;
-                    //             try {
-                    //                 const data = await this.controller.driveMode(id);
-                    //                 if (!carElement.classList.contains('stopped')) {
-                    //                     carElement.classList.add('finished');
-                    //                 }
-                                    
-                    //                 return data;
-                    //             } catch {
-                    //                 // const currentPosition = carElement.getBoundingClientRect().left;
-                    //                 carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
-                    //                 carElement.classList.remove('animate');
-                    //                 if (!carElement.classList.contains('stopped')) {
-                    //                     carElement.classList.add('broken');
-                    //                 }
-                                    
-                    //                 carElement.classList.add('broken'); 
-                    //             }
-                    //         };
-
-                    //         animateCar(distance, velocity);
-                    //     }
-                    // }
-                    // console.log(cars);
+                    });
+                    console.log(promises);
                 }
 
                 if (event.target === stopButton) {
-                    gotTracks.map(async (track) => {
+                    raceButton.disabled = false;
+                    Promise.all(gotTracks.map(async (track) => {
                         const carElement: HTMLElement | null = track.querySelector('.car')!;
-                        const driveButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
-                        const stopButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
+                        const driveCarButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
+                        const stopCarButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
                         const id = Number(track.getAttribute('data-id'));
 
                         try {
@@ -269,12 +223,12 @@ export default class Garage {
                                 if (carElement.classList.contains('winner')) carElement.classList.remove('winner');
                                 carElement.style.transform = `translateX(${0}px)`;
                             });
-                            driveButton.disabled = false;
-                            stopButton.disabled = true;
+                            driveCarButton.disabled = false;
+                            stopCarButton.disabled = true;
                         } catch {
                             throw Error('Error has detected');
                         }
-                    });
+                    }));
                 }
             }
         });
