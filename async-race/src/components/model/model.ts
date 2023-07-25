@@ -63,8 +63,8 @@ export default class Model {
             });
             const data = response.json();
             return data;
-        } catch {
-            console.log('Masakra');
+        } catch(err) {
+            console.log(err);
         }
         // return await fetch(endpoint, {
         //     method: 'PATCH',

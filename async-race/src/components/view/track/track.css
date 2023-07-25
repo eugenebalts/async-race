@@ -6,6 +6,23 @@
     border-bottom: 2px dashed white;
 }
 
+.garage__track.winner {
+    animation: highlight 2s ease-in-out infinite;
+    
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgb(84, 255, 130, .3);
+    }
+    50% {
+        background-color: transparent;
+    }
+    100% {
+        background-color: rgb(84, 255, 130, .3);
+    }
+}
+
 .track__header {
     display: flex;
     gap: 15px;

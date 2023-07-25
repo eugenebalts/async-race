@@ -60,12 +60,10 @@ export default class Track {
                     stopRaceButton!.disabled = false;
                     if (newCar.classList.contains('stopped')) newCar.classList.remove('stopped');
                     const {velocity, distance} = await this.controller.startEngine(this.car.id, 'started');
-                    console.log(velocity, distance);
                     const startPosition = newCar.getBoundingClientRect().left;
                     const endPosition = finish.getBoundingClientRect().right;
                     const difference = endPosition - startPosition;
-                    console.log(startPosition);
-                    console.log(endPosition);
+
 
                     const animateCar = async (distance: number, velocity: number) => {
                         driveButton.disabled = true;
@@ -97,6 +95,9 @@ export default class Track {
                 }
 
                 if (event.target.classList.contains('road__button_stop')) {
+                    if (event.target.parentElement?.closest('.winner')) {
+                        event.target.parentElement?.closest('.winner')?.classList.remove('winner');
+                    }
                     try {
                         await this.controller.startEngine(this.car.id, 'stopped')
                         .then(() => {

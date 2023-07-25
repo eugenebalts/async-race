@@ -19,7 +19,6 @@ export default class Controller {
             .catch((err) => {
                 alert(`Failed to fetch data. Error message:  ${err.message}. Please, reload the page.`);
             });
-        console.log(STATE.cars);
     }
 
     getCars(page: number) {
@@ -37,7 +36,7 @@ export default class Controller {
             STATE.cars.push(data);
             updateMaxPage();
         });
-        console.log(STATE.cars);
+
 
         return response;
     }
@@ -46,7 +45,6 @@ export default class Controller {
         const response = this.model.deleteData(this.path.garage, id);
         await response.then((data) => {
             if (data) {
-                console.log(id);
                 for (let i = 0; i < STATE.cars.length; i++) {
                     const car = STATE.cars[i];
                     if (car.id === id) STATE.cars.splice(i, 1);
@@ -61,7 +59,6 @@ export default class Controller {
         const response = this.model.deleteData(this.path.winners, id);
         await response.then((data) => {
             if (data) {
-                console.log(id);
                 for (let i = 0; i < STATE.winners.length; i++) {
                     const winner = STATE.winners[i];
                     if (winner.id === id) STATE.winners.splice(i, 1);
@@ -87,7 +84,6 @@ export default class Controller {
                 }
             }
         });
-        console.log(STATE.cars);
 
         return response;
     }
@@ -144,11 +140,9 @@ export default class Controller {
             .catch((err) => {
                 alert(`Failed to fetch data. Error message:  ${err.message}. Please, reload the page.`);
             });
-        console.log(STATE.cars);
     }
 
     async updateWinner(id: number, time: number) {
-        console.log(`need to update ${id} ${time}`);
         const currentValues = STATE.winners.filter((item) => {
             return item.id === id;
         })[0];
@@ -183,7 +177,6 @@ export default class Controller {
             STATE.winners.push(data);
             updateMaxPage();
         });
-        console.log(STATE.winners);
 
         return response;
     }

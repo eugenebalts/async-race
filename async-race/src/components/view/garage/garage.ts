@@ -126,7 +126,7 @@ export default class Garage {
                     
                     let firstWinner: HTMLElement | null = null;
 
-                    const promises = gotTracks.map(async (track) => {
+                    gotTracks.map(async (track) => {
                         const carElement = track.querySelector('.car');
                             const driveCarButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
                             const stopCarButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
@@ -140,8 +140,6 @@ export default class Garage {
                                 const startPosition = carElement.getBoundingClientRect().left;
                                 const endPosition = finish.getBoundingClientRect().right;
                                 const difference = endPosition - startPosition;
-                                console.log(startPosition);
-                                console.log(endPosition);
 
                                 const animateCar = async (distance: number, velocity: number) => {
                                     driveCarButton.disabled = true;
@@ -155,26 +153,26 @@ export default class Garage {
                                         if (!carElement.classList.contains('stopped')) {
                                             carElement.classList.add('finished');
                                         }
-                                        // return carElement;
                                         if (!firstWinner) {
                                             firstWinner = carElement;
-                                            console.log(firstWinner);
-                                            if (!carElement.classList.contains('stooped')) {
+
+                                            if (!carElement.classList.contains('stopped')) {
                                                 firstWinner.classList.add('winner');
-                                                this.controller.createWinner(id, time / 1000);
+                                                if (track.contains(firstWinner)) {
+                                                    track.classList.add('winner');
+                                                }
+                                                await this.controller.createWinner(id, time / 1000);
+                                                this.winners.redrawWinners();
                                             }
-                                            
-                                            console.log(STATE.winners);
+
                                         }
                                     } catch {
                                         // const currentPosition = carElement.getBoundingClientRect().left;
                                         if (!carElement.classList.contains('stopped')) {
                                             carElement.style.transform = `translateX(${carElement.getBoundingClientRect().left - carElement.clientWidth}px)`;
                                             carElement.classList.remove('animate');
-                                            console.log(carElement);
                                             carElement.classList.add('broken');
                                         }
-                                        console.log('im broke');
                                     }
                                 };
 
@@ -185,13 +183,13 @@ export default class Garage {
                                 }
                             }
                     });
-                    console.log(promises);
                 }
 
                 if (event.target === stopButton) {
                     raceButton.disabled = false;
                     stopButton.disabled = true;
                     Promise.all(gotTracks.map(async (track) => {
+                        track.classList.remove('winner');
                         const carElement: HTMLElement | null = track.querySelector('.car')!;
                         const driveCarButton: HTMLButtonElement | null = track.querySelector('.road__button_drive')!;
                         const stopCarButton: HTMLButtonElement | null = track.querySelector('.road__button_stop')!;
