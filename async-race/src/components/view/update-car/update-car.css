@@ -17,6 +17,7 @@
 }
 
 .update-car__container {
+    width: 250px;
     position: relative;
     padding: 20px;
     display: flex;

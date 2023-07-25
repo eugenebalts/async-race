@@ -52,7 +52,9 @@ export default class UpdateCar {
         const newCarButton = createNewElement('button', ['form__button', 'form__button_update'], {textContent: 'UPDATE'});
 
         newCarInput.addEventListener('input', () => {
-            carToChangeName.textContent = `${newCarInput.value} №${id}`;
+            const value = newCarInput.value;
+            carToChangeName.textContent = `${
+                value.length > 10 ? value.slice(0, 10) + '... ' : value} №${id}`;
         });
 
         newCarColor.addEventListener('input', () => {
