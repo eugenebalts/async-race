@@ -1,6 +1,6 @@
 export default class Model {
     
-    readonly baseLink: string = 'http://127.0.0.1:3000';
+    readonly baseLink: string = 'http://localhost:3000';
 
     async getData(path: string, queryParams?: Array<IQueryParams>) {
         const generateQueryString = () => {
