@@ -13,7 +13,7 @@ export default class UpdateCar {
     }
 
     drawUpdateWrapper(id: number) {
-        console.log(id);
+
         const updateWrapper = createNewElement('div', ['garage__update-car']);
 
         const updateContainer = createNewElement('div', ['update-car__container']);
@@ -66,10 +66,10 @@ export default class UpdateCar {
 
         newCarButton.addEventListener('click', () => {
             // const car = STATE.cars[carsIndex];
-            console.log(STATE.cars[carsIndex]);
+
             STATE.cars[carsIndex].color = newCarColor.value;
             STATE.cars[carsIndex].name = newCarInput.value;
-            console.log(STATE.cars[carsIndex]);
+
 
             this.controller.updateCar(newCarInput.value, newCarColor.value, id);
             this.updated = true;
