@@ -1,5 +1,5 @@
 import './car.css';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 
 export default class Car {
     readonly name: string;

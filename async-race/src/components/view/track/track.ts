@@ -1,5 +1,5 @@
 import './track.css';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 import Car from '../car/car';
 
 export default class Track {

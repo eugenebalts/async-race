@@ -1,5 +1,5 @@
 import './winners.css';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 import STATE from '../../model/STATE';
 import Pagination from '../pagination/pagination';
 import Car from '../car/car';

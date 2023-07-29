@@ -1,9 +1,9 @@
 import './tracks.css';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 import Controller from '../../controller/controller';
 import Car from '../car/car';
 import Track from '../track/track';
-import { ICar } from '../../types/cat.types';
+import { ICar } from '../../types/types';
 import STATE from '../../model/STATE';
 import UpdateCar from '../update-car/update-car';
 import Winners from '../winners/winners';

@@ -1,6 +1,6 @@
 import './update-car.css';
 import Car from '../car/car';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 import STATE from '../../model/STATE';
 import Controller from '../../controller/controller';
 

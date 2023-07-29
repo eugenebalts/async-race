@@ -22,6 +22,10 @@ interface IWinner {
     time: number,
 }
 
+interface IOptions {
+    [key: string]: string | boolean;    
+}
 
 
-export {ICar, IState, IWinner};
+
+export {ICar, IState, IWinner, IOptions};

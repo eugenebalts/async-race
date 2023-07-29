@@ -1,5 +1,5 @@
 import './header.css';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 
 export default class Header {
     

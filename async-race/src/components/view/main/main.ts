@@ -2,7 +2,7 @@ import './main.css';
 import Navigation from '../navigation/navigation';
 import Garage from '../garage/garage';
 import Winners from '../winners/winners';
-import createNewElement from '../create-new-element';
+import { createNewElement } from '../../../utils/utils';
 
 export default class Main {
     private navigation = new Navigation();

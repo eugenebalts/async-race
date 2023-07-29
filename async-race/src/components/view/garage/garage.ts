@@ -1,6 +1,6 @@
 import './garage.css';
 import Controller from '../../controller/controller';
-import createNewElement from "../create-new-element";
+import { createNewElement } from '../../../utils/utils';
 import Tracks from '../tracks/tracks';
 import Pagination from '../pagination/pagination';
 import STATE from '../../model/STATE';

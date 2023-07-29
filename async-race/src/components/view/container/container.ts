@@ -1,5 +1,5 @@
 import './container.css';
-import createNewElement from "../create-new-element";
+import { createNewElement } from '../../../utils/utils';
 import Main from '../main/main';
 import Header from '../header/header';
 
