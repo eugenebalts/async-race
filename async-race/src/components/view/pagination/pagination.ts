@@ -3,7 +3,8 @@ import createNewElement from '../create-new-element';
 import STATE from '../../model/STATE';
 
 export default class Pagination {
-    section: string;
+    private section: string;
+    
     constructor(section: string = 'garage') {
         this.section = section;
     }
