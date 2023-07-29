@@ -1,1 +1,27 @@
-export type Options = Record<string, string>;
+interface ICar {
+    name: string;
+    color: string;
+    id: number;
+}
+
+interface IState {
+    carsOnPage: number,
+    cars: ICar[],
+    currentPage: number,
+    maxPage: number,
+    winners: IWinner[],
+    winnersPages: number,
+    winnersOnPage: number,
+    currentWinnersPage: number,
+    firstWinner: HTMLElement | null,
+}
+
+interface IWinner {
+    id?: number,
+    wins: number,
+    time: number,
+}
+
+
+
+export {ICar, IState, IWinner};

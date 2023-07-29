@@ -4,7 +4,7 @@ import createNewElement from "../create-new-element";
 import Tracks from '../tracks/tracks';
 import Pagination from '../pagination/pagination';
 import STATE from '../../model/STATE';
-import { carNames, carModels } from '../../model/STATE';
+import { CARS_NAMES, CARS_MODELS } from '../../model/STATE';
 import { getRandomIndex, getRandomColor } from '../../../utils/utils';
 
 export default class Garage {
@@ -71,8 +71,8 @@ export default class Garage {
 
         generateButton.addEventListener('click', () => {
             for (let i = 0; i <= 100; i++) {
-                const randomCarName: string = carNames[getRandomIndex(carNames.length)];
-                const randomCarModel: string = carModels[getRandomIndex(carModels.length)];
+                const randomCarName: string = CARS_NAMES[getRandomIndex(CARS_NAMES.length)];
+                const randomCarModel: string = CARS_MODELS[getRandomIndex(CARS_MODELS.length)];
                 const randomCarColor = getRandomColor();
                 (async () => {
                     return await this.controller.createCar(`${randomCarName} ${randomCarModel}`, randomCarColor)
