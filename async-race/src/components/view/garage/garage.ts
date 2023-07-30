@@ -117,6 +117,7 @@ export default class Garage {
         garageTracks.map(async (track) => {
             this.tracks.startRace(track, 'race');
         });
+        STATE.firstWinner = null;
     }
 
     private resetRace() {
