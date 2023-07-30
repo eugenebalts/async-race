@@ -110,7 +110,7 @@ export default class Tracks {
                                     track.classList.add('winner');
                                 }
                                 await this.controller.createWinner(carsId, racingTime / 1000);
-                                this.winners.redrawWinners();
+                                this.winners.drawWinners();
                             }
                         }
                     }
