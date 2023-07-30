@@ -1,10 +1,10 @@
 import Model from '../model/model';
 import STATE, { updateMaxPage } from '../model/STATE';
-import { ICar } from '../types/cat.types';
+import { ICar, IWinner, IQueryParams } from '../types/types';
 
 export default class Controller {
-    model = new Model();
-    readonly path = {
+    private model = new Model();
+    private readonly path = {
         garage: '/garage/',
         winners: '/winners/',
         engine: '/engine/',
@@ -26,7 +26,7 @@ export default class Controller {
     }
 
     async createCar(name: string, color: string) {
-        const newCar: object = {
+        const newCar: Record<string, string> = {
             name,
             color
         };
@@ -36,7 +36,6 @@ export default class Controller {
             STATE.cars.push(data);
             updateMaxPage();
         });
-
 
         return response;
     }
@@ -89,7 +88,7 @@ export default class Controller {
     }
 
     async startEngine(id: number, method: string) {
-        const queryParams = [
+        const queryParams: IQueryParams[] = [
             {
                 key: 'id',
                 value: id,
@@ -110,7 +109,7 @@ export default class Controller {
     }
 
     async driveMode(id: number) {
-        const queryParams = [
+        const queryParams: IQueryParams[] = [
             {
                 key: 'id',
                 value: id,
@@ -120,14 +119,12 @@ export default class Controller {
                 value: 'drive'
             }
         ];
-        // const response = this.model.patchData(`${this.path.engine}`, queryParams);
         try {
             const response = await this.model.patchData(`${this.path.engine}`, queryParams);
             const data = response;
             return data;
-
         } catch {
-            throw new Error('Brother, your 0.9 TDI has broken, swap to 6.3');
+            throw new Error('Brother, your 0.9 TDI was broken, swap to 6.3');
         }
     }
 
@@ -143,22 +140,21 @@ export default class Controller {
     }
 
     async updateWinner(id: number, time: number) {
-        const currentValues = STATE.winners.filter((item) => {
+        const currentValues: IWinner = STATE.winners.filter((item) => {
             return item.id === id;
         })[0];
         const newValues: IWinner = {
             wins: currentValues.wins + 1,
             time: time < currentValues.time ? time : currentValues.time,
         };
-
         const response = this.model.postData('PUT', `${this.path.winners}${id}`, newValues);
+
         return await response.then((data) => {
-            const indexInSTATE = STATE.winners.findIndex((item) => item.id === id);
+            const indexInSTATE: number = STATE.winners.findIndex((item) => item.id === id);
             STATE.winners[indexInSTATE].id = id;
             STATE.winners[indexInSTATE].wins = data.wins;
             STATE.winners[indexInSTATE].time = data.time;
         });
-        // return response;
     }
 
     async createWinner(id: number, time: number) {
@@ -181,9 +177,3 @@ export default class Controller {
         return response;
     }
 }
-
-        interface IWinner {
-            id?: number,
-            wins: number,
-            time: number,
-        }

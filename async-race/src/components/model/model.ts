@@ -1,6 +1,7 @@
+import { IQueryParams } from "../types/types";
+
 export default class Model {
-    
-    readonly baseLink: string = 'http://localhost:3000';
+    private readonly baseLink: string = 'http://localhost:3000';
 
     async getData(path: string, queryParams?: Array<IQueryParams>) {
         const generateQueryString = () => {
@@ -11,17 +12,17 @@ export default class Model {
             }
         };
 
-        let endpoint = `${this.baseLink}${path}`;
-        if (queryParams) {
-            endpoint = `${endpoint}${generateQueryString()}`;
-        }
+        let endpoint: string = `${this.baseLink}${path}`;
+
+        if (queryParams) endpoint = `${endpoint}${generateQueryString()}`;
+
         return await fetch(endpoint)
             .then((res) => res.json())
             .then((data) => data);
     }
 
     async postData(method: string, path: string, data: object) {
-        const endpoint = `${this.baseLink}${path}`;
+        const endpoint: string = `${this.baseLink}${path}`;
         const response = await fetch(endpoint, {
             method,
             headers: {
@@ -30,11 +31,13 @@ export default class Model {
             body: JSON.stringify(data),
         });
         const newElement = await response.json();
+
         return newElement;
     }
 
     async deleteData(path: string, id: number) {
-        const endpoint = `${this.baseLink}${path}${id}`;
+        const endpoint: string = `${this.baseLink}${path}${id}`;
+
         return await fetch(endpoint, {
             method: 'DELETE',
         })
@@ -44,8 +47,7 @@ export default class Model {
     }
 
     async patchData(path: string, queryParams: Array<IQueryParams>) {
-
-        const generateQueryString = () => {
+        const generateQueryString = (): string => {
             if (queryParams?.length) {
                 return `?${queryParams.map(param => `${param.key}=${param.value}`).join('&')}`;
             } else {
@@ -53,7 +55,7 @@ export default class Model {
             }
         };
 
-        let endpoint = `${this.baseLink}${path}`;
+        let endpoint: string = `${this.baseLink}${path}`;
         if (queryParams) {
             endpoint = `${endpoint}${generateQueryString()}`;
         }
@@ -66,16 +68,5 @@ export default class Model {
         } catch(err) {
             console.log(err);
         }
-        // return await fetch(endpoint, {
-        //     method: 'PATCH',
-        // })
-        // .then((data) => {
-        //     return data.json();
-        // });
     }
-}
-
-interface IQueryParams {
-    key: string;
-    value: number | string;
 }

@@ -26,6 +26,11 @@ interface IOptions {
     [key: string]: string | boolean;    
 }
 
+interface IQueryParams {
+    key: string;
+    value: number | string;
+}
 
 
-export {ICar, IState, IWinner, IOptions};
+
+export {ICar, IState, IWinner, IOptions, IQueryParams};
